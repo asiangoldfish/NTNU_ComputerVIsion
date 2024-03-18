@@ -30,11 +30,16 @@ package manager of choice doesn't contain Python3.9, then we suggest using
     # Python 3.9.18
     ```
 3. Once Python is installed, activate the virtual environment and install all
-   dependencies. Please note that this will take some time.
+   dependencies. Please note this will take some time.
    ```
    python -m venv .venv
    source .venv/bin/activate
    pip install -r requirements.txt
+   ```
+
+   *Optionally*, you can install the dependencies manually.
+   ```
+   pip install numpy pandas numpydoc keras torch tensorflow pillow opencv-python scikit-learn
    ```
 
 # Windows
