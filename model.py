@@ -1,7 +1,7 @@
 import cv2
 
 
-cap = cv2.VideoCapture('fish2.mp4')
+cap = cv2.VideoCapture('fish.mp4')
 
 # Resize the video window
 cv2.namedWindow('Video', cv2.WINDOW_NORMAL)
