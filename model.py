@@ -1,29 +1,74 @@
-import cv2
-
+import cv2      # Using functions from OpenCV
 
 cap = cv2.VideoCapture('fish.mp4')
+
+if not cap.isOpened():
+    print("Error: Could not open video file 'fish.mp4'")
+    exit()
+    
+# Find total number of frames to find the last frame
+# (for background extraction)
+total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+
+# Set the video capture position to the last frame
+cap.set(cv2.CAP_PROP_POS_FRAMES, total_frames - 1)
+
+ret, last_frame = cap.read()  # Get the last 
+if not ret:
+    print("Error: Failed to read last frame from video")
+    exit()
+    
+# Resize and turn to grayscale to match frames in loop 
+resized_last_frame = cv2.resize(last_frame, (224, 224))
+#normalized_last_frame = resized_last_frame.astype(float) / 255.0
+gray_last_frame = cv2.cvtColor(resized_last_frame, cv2.COLOR_BGR2GRAY)
+blurred_last_frame = cv2.GaussianBlur(gray_last_frame, (5,5), 0)
+
 
 # Resize the video window
 cv2.namedWindow('Video', cv2.WINDOW_NORMAL)
 cv2.resizeWindow('Video', 800, 600)  # Adjust the width and height as needed
 
+# Reset the video capture position to the first frame
+cap.set(cv2.CAP_PROP_POS_FRAMES, 1)
+
+# Structuring element for morphological operations
+kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
+
+# Loop through each frame of the video
 while True:
     ret, frame = cap.read()
     if not ret:
         break
     
-    
-    # Preprocessing goes here
-        # Noise reduction: Gaussian blurring and median filtering
-        # Noramlizing and balancing colors, deblur motion blurring
+    # Preprocessing 
+    resized_frame = cv2.resize(frame, (224, 224))
+    #normalized_frame = resized_frame.astype(float) / 255.0
+    gray_frame = cv2.cvtColor(resized_frame, cv2.COLOR_BGR2GRAY)
+    #blurred_frame = cv2.GaussianBlur(gray_frame, (5,5), 0)
+
     
     # Object detection
         # HOG
     
-    # Shape extraction
+    # Shape/feature extraction
+    
+    # Background subtraction
+    background_subtracted_frame = cv2.absdiff(gray_frame, gray_last_frame)
+
+    # Thresholding
+    _, binary_mask = cv2.threshold(background_subtracted_frame, 30, 255, cv2.THRESH_BINARY)
         # Background extraction, subtract the last frame
-    
+        # Morphological operations (erosion, dilation, opening, closing)
+        
     # CNN
-        # Khai?
+        # Kahi?
+        
+    cv2.imshow('Video', binary_mask)
     
-    
+    key = cv2.waitKey(25)  # Set playback speed (ms between frames)
+    if key == ord('q'):    # Add option to exit program
+        break
+
+cap.release()
+cv2.destroyAllWindows()
