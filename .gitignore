@@ -1,0 +1,12 @@
+# Python
+## Environment
+.venv/
+venv/
+
+# Build artifacts
+bin/
+build/
+target/
+
+# Third party libraries
+vendor/
