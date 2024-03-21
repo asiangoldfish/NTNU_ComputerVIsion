@@ -44,11 +44,14 @@ package manager of choice doesn't contain Python3.9, then we suggest using
 
 # Windows
 
+Some of the project's dependencies require Python version 3.9.
+Follow the guide below for installation.
+
 ## Prerequisites
 
 - Git installed on your Windows system. You can download and install Git from [git-scm.com](https://git-scm.com/).
 
-## Step-by-Step Installation Guide
+## Step-by-Step Installation Guide for Python 3.9
 
 1. **Install pyenv**:
    - Open a command prompt (cmd) as an administrator.
