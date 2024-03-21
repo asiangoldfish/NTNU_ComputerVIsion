@@ -43,3 +43,58 @@ package manager of choice doesn't contain Python3.9, then we suggest using
    ```
 
 # Windows
+
+## Prerequisites
+
+- Git installed on your Windows system. You can download and install Git from [git-scm.com](https://git-scm.com/).
+
+## Step-by-Step Installation Guide
+
+1. **Install pyenv**:
+   - Open a command prompt (cmd) as an administrator.
+   - Run the following command to install pyenv-win:
+     ```
+     git clone https://github.com/pyenv-win/pyenv-win.git "%USERPROFILE%\.pyenv"
+     ```
+   - Add `%USERPROFILE%\.pyenv\bin` to your system's PATH environment variable.
+
+2. **Install Python 3.9 with pyenv**:
+   - Open a new command prompt.
+   - Run the following command to install Python 3.9:
+     ```
+     pyenv install 3.9.18
+     ```
+
+3. **Set Python 3.9 as the local version**:
+   - Navigate to your project directory in the command prompt.
+   - Run the following command to set Python 3.9 as the local version for your project:
+     ```
+     pyenv local 3.9.18
+     ```
+
+4. **Verify Python installation**:
+   - Run the following command to verify that Python 3.9 is installed correctly:
+     ```
+     python --version
+     ```
+
+5. **Create and activate a virtual environment**:
+   - Navigate to your project directory in the command prompt.
+   - Run the following commands to create and activate a virtual environment named `.venv`:
+     ```
+     python -m venv .venv
+     .venv\Scripts\activate
+     ```
+
+6. **Install project dependencies**:
+   - Ensure you're still in your project directory and your virtual environment is activated.
+   - Run the following command to install the dependencies listed in your `requirements.txt` file:
+     ```
+     pip install -r requirements.txt
+     ```
+
+   Optionally, you can install the dependencies manually using the following command:
+
+   ```
+   pip install numpy pandas numpydoc keras torch tensorflow pillow opencv-python scikit-learn
+   ```
