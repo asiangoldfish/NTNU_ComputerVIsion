@@ -9,8 +9,8 @@ For this project, you will need the following dependencies:
 - A GPU with CUDA cores
 
 *Python Packages:*
+- ipykernel
 - numpy
-- pytorch
+- torch
 - torchvision
 - matplotlib
-- ipykernel
