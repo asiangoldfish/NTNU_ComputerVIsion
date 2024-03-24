@@ -10,3 +10,8 @@ target/
 
 # Third party libraries
 vendor/
+
+# IDE and editors
+.vscode/
+.vs/
+.intellij/

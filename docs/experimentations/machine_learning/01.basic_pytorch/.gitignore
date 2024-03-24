@@ -1,0 +1,5 @@
+# Data sets
+data/
+
+# Saved model. This can be very large, so we shouldn't upload it to git
+cifar_net.pth
