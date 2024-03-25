@@ -14,3 +14,9 @@ For this project, you will need the following dependencies:
 - torch
 - torchvision
 - matplotlib
+
+You can install them manually with pip, or with the provided requirements.txt:
+
+```
+pip install -r requirements.txt
+```
