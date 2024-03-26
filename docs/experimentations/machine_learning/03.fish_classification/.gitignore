@@ -1,0 +1,8 @@
+# Dataset
+data/
+
+# Python virtual environment
+.venv/
+
+# Output of video
+output/
