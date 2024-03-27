@@ -6,14 +6,17 @@ The Fish Detection project is designated to the NTNU course of IDATG2206 - Compu
 - *TODO: Put some images with object detection and classification*
 
 # Navigation
+The repository is shared across multiple contributors. Hence, it's messy and navigation can be troublesome. Feel free to use our navigation links to guide yourself through our work.
+
 - [Task Description](./docs/task_description.pdf)
 - [Installation](./docs/installation.md)
+- [Experimentations](./docs/experimentations/README.md)
 - [Usage](#usage)
 - [Resources](#resources)
 - [Licenses](#licenses)
 
 # Installation
-See [installation](./docs/installation.md) for instructions.
+See [installation](./docs/installation.md) for instructions. This helps you setting up your system to execute our codes and projects.
 
 # Usage
 TODO: Write down how to use this project
