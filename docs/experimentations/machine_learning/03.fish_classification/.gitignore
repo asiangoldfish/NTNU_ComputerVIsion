@@ -6,3 +6,6 @@ data/
 
 # Output of video
 output/
+
+# Model output
+model.pth
