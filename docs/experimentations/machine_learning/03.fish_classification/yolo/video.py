@@ -129,6 +129,8 @@ assert cap.isOpened(), 'Cannot capture source'
 frames = 0  
 start = time.time()
 
+# Attribution to the original author of the below code:
+# Bartłomiej "furas" Burek: https://stackoverflow.com/a/39953739
 width  = int(cap.get(3))  # float `width`
 height = int(cap.get(4))  # float `height`
 
