@@ -7,6 +7,7 @@ Fish detection and classification:
 License: [bbc.co.uk – © copyright 2021 BBC](https://www.bbc.com/news/science-environment-59760356)
 
 Also tested on other classes!
+
 ![classified dog](./img/det_dog-cycle-car.png)
 
 Attribution: [Ayoosh Kathuria](https://github.com/ayooshkathuria/YOLO_v3_tutorial_from_scratch?ref=blog.paperspace.com)
