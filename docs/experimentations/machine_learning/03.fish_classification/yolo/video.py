@@ -44,11 +44,11 @@ nms_thesh = float(args.nms_thresh)
 start = 0
 CUDA = torch.cuda.is_available()
 
+NAMES_FILE = "data/obj.names"
 
 
 num_classes = 80
-classes = load_classes("data/coco.names")
-
+classes = load_classes(NAMES_FILE)
 
 
 #Set up the neural network
@@ -71,21 +71,50 @@ if CUDA:
 model.eval()
 
 
+# Reference code from original author
+# def write(x, results):
+#     c1 = tuple(x[1:3].int())
+#     c2 = tuple(x[3:5].int())
+#     img = results
+#     cls = int(x[-1])
+#     color = random.choice(colors)
+#     label = "{0}".format(classes[cls])
+#     try:
+#         cv2.rectangle(img, c1, c2,color, 1)
+#     except Exception as e:
+#         print(e)
+#         print(f"[DEBUG]ct1: {c1}, c2: {c2}")
+#         sys.exit(1)
+#     t_size = cv2.getTextSize(label, cv2.FONT_HERSHEY_PLAIN, 1 , 1)[0]
+#     c2 = c1[0] + t_size[0] + 3, c1[1] + t_size[1] + 4
+#     cv2.rectangle(img, c1, c2,color, -1)
+#     cv2.putText(img, label, (c1[0], c1[1] + t_size[1] + 4), cv2.FONT_HERSHEY_PLAIN, 1, [225,255,255], 1);
+#     return img
+
 
 def write(x, results):
+    """
+    This function is rewritten by Dawn11041107 at:
+    https://github.com/ayooshkathuria/YOLO_v3_tutorial_from_scratch/issues/69#issuecomment-1616601534
+    """
     c1 = tuple(x[1:3].int())
     c2 = tuple(x[3:5].int())
+
+    # 将c1和c2的值转换为整数类型
+    c1 = (int(c1[0].item()), int(c1[1].item()))
+    c2 = (int(c2[0].item()), int(c2[1].item()))
+
     img = results
     cls = int(x[-1])
-    color = random.choice(colors)
+    color = (0, 255, 0) # random.choice(colors)
     label = "{0}".format(classes[cls])
-    cv2.rectangle(img, c1, c2,color, 1)
+    cv2.rectangle(img, c1, c2, color, 2)
     t_size = cv2.getTextSize(label, cv2.FONT_HERSHEY_PLAIN, 1 , 1)[0]
     c2 = c1[0] + t_size[0] + 3, c1[1] + t_size[1] + 4
     cv2.rectangle(img, c1, c2,color, -1)
     cv2.putText(img, label, (c1[0], c1[1] + t_size[1] + 4), cv2.FONT_HERSHEY_PLAIN, 1, [225,255,255], 1);
-    return img
 
+    return img
 
 #Detection phase
 
@@ -100,9 +129,12 @@ assert cap.isOpened(), 'Cannot capture source'
 frames = 0  
 start = time.time()
 
+width  = int(cap.get(3))  # float `width`
+height = int(cap.get(4))  # float `height`
+
 while cap.isOpened():
     ret, frame = cap.read()
-    
+    frame = cv2.resize(frame, (width//2, height//2))
     if ret:   
         img = prep_image(frame, inp_dim)
 #        cv2.imshow("a", frame)
@@ -114,9 +146,8 @@ while cap.isOpened():
             img = img.cuda()
         
         with torch.no_grad():
-            output = model(Variable(img, volatile = True), CUDA)
+            output = model(Variable(img), CUDA)
         output = write_results(output, confidence, num_classes, nms_conf = nms_thesh)
-
 
         if type(output) == int:
             frames += 1
@@ -126,12 +157,12 @@ while cap.isOpened():
             if key & 0xFF == ord('q'):
                 break
             continue
-        
-        
-        
 
+        
+        
         im_dim = im_dim.repeat(output.size(0), 1)
         scaling_factor = torch.min(416/im_dim,1)[0].view(-1,1)
+        # scaling_factor = torch.min(int(args.reso)/im_dim,1)[0].view(-1,1)
         
         output[:,[1,3]] -= (inp_dim - scaling_factor*im_dim[:,0].view(-1,1))/2
         output[:,[2,4]] -= (inp_dim - scaling_factor*im_dim[:,1].view(-1,1))/2
@@ -142,21 +173,18 @@ while cap.isOpened():
             output[i, [1,3]] = torch.clamp(output[i, [1,3]], 0.0, im_dim[i,0])
             output[i, [2,4]] = torch.clamp(output[i, [2,4]], 0.0, im_dim[i,1])
     
-        
-        
-
-        classes = load_classes('data/coco.names')
         colors = pkl.load(open("pallete", "rb"))
 
         list(map(lambda x: write(x, frame), output))
-        
+
         cv2.imshow("frame", frame)
         key = cv2.waitKey(1)
         if key & 0xFF == ord('q'):
             break
         frames += 1
-        print(time.time() - start)
+        # print(time.time() - start)
         print("FPS of the video is {:5.2f}".format( frames / (time.time() - start)))
+
     else:
         break     
 

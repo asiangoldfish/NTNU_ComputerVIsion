@@ -127,7 +127,7 @@ for i, batch in enumerate(im_batches):
     if CUDA:
         batch = batch.cuda()
     with torch.no_grad():
-        prediction = model(Variable(batch), CUDA)
+        prediction = model(Variable(batch, volatile=True), CUDA)
 
     prediction = write_results(prediction, confidence, num_classes, nms_conf = nms_thesh)
 
@@ -188,8 +188,11 @@ colors = pkl.load(open("pallete", "rb"))
 
 draw = time.time()
 
-
 def write(x, results):
+    """
+    This function is rewritten by Dawn11041107 at:
+    https://github.com/ayooshkathuria/YOLO_v3_tutorial_from_scratch/issues/69#issuecomment-1616601534
+    """
     c1 = tuple(x[1:3].int())
     c2 = tuple(x[3:5].int())
 
