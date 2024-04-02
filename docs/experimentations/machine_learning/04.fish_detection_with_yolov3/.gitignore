@@ -1,0 +1,15 @@
+# Weights
+weights/
+
+# Python virtual environment
+.venv/
+__pycache__/
+
+# Output of video
+output/
+
+# Model output
+model.pth
+det/
+
+# Misc
