@@ -42,4 +42,4 @@ for track in salmon_tracks:
         # Frame number occupies 6 digits
         frame_num = str(frame).zfill(6)
         with open(f'annotations/frame_{frame_num}.txt', 'a') as f:
-            f.write(f'{frame} {x_center} {y_center} {width} {height}\n')
+            f.write(f'0 {x_center} {y_center} {width} {height}\n')
