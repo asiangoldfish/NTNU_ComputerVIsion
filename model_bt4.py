@@ -11,30 +11,6 @@ Created on Tue Apr  2 22:28:42 2024
 import cv2
 import numpy as np
 import sys
-# Function to create a mask for the fish in the first frame
-def create_fish_mask(firstframe): #rename underwater_denoise
-
-    # Convert the frame to grayscale
-    gray = cv2.cvtColor(firstframe, cv2.COLOR_BGR2GRAY)
-
-    # Apply Gaussian blur to reduce noise
-    blur = cv2.GaussianBlur(gray, (5, 5), 0)
-
-    # Perform adaptive thresholding
-    #thresh = cv2.adaptiveThreshold(blur, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV,11, 5)
-    ret, thresh3 = cv2.threshold(blur, 0, 255, cv2.THRESH_BINARY_INV+cv2.THRESH_OTSU)
-
-    #cv2.imshow('first frame',thresh)
-    # Find contours
-    #contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
-    # Create a mask to store the fish region
-    #mask = np.zeros_like(frame)
-
-    # Draw contours on the mask
-    #cv2.drawContours(mask, contours, -1, (255, 255, 255), thickness=cv2.FILLED)
-
-    return thresh3
 
 # Resize the video window
 cv2.namedWindow('Video', cv2.WINDOW_NORMAL)
@@ -71,9 +47,6 @@ fthresh = cv2.adaptiveThreshold(blur, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.T
 ret, fthresh3 = cv2.threshold(blur, 0, 255, cv2.THRESH_BINARY_INV+cv2.THRESH_OTSU)
 ret, fthresh4 = cv2.threshold(blur,threshvalue,255,cv2.THRESH_BINARY)
 lastframe = cv2.bitwise_not(fthresh4)
-
-# Create a mask for the fish in the first frame
-fish_mask = create_fish_mask(firstframe)
 
 # Get the height and width of the video frames
 height, width = firstframe.shape[:2]
@@ -117,7 +90,6 @@ while True:
     #cv2.imshow('Fish on Black', fish_mask_inv)
     
     fish_only = cv2.bitwise_xor(thresh4, fthresh4)
-    fish_only2 = cv2.bitwise_xor(thresh3, fish_mask)
 
     kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3))
     erode_frame = cv2.erode(fish_only,kernel,8)
