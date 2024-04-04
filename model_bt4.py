@@ -13,10 +13,10 @@ import numpy as np
 import sys
 
 # Resize the video window
-cv2.namedWindow('Video', cv2.WINDOW_NORMAL)
-cv2.resizeWindow('Video', 800, 400)  # Adjust the width and height as needed
-cv2.namedWindow('Video2', cv2.WINDOW_NORMAL)
-cv2.resizeWindow('Video2', 800, 400)  # Adjust the width and height as needed
+cv2.namedWindow('GrayANDbwVideo', cv2.WINDOW_NORMAL)
+cv2.resizeWindow('GrayANDbwVideo', 800, 400)  # Adjust the width and height as needed
+cv2.namedWindow('ColorVideo', cv2.WINDOW_NORMAL)
+cv2.resizeWindow('ColorVideo', 800, 400)  # Adjust the width and height as needed
 
 # Open the video file
 cap = cv2.VideoCapture('fish.mp4')
@@ -26,7 +26,8 @@ threshvalue = 125
 total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
 
 # Set the frame position to the last frame
-cap.set(cv2.CAP_PROP_POS_FRAMES, total_frames - 8)
+comparing_frame = total_frames - 8
+cap.set(cv2.CAP_PROP_POS_FRAMES, comparing_frame)
 
 # Read the first frame
 ret, firstframe = cap.read()
@@ -61,11 +62,19 @@ while True:
 
     if not ret:
         break
-    
+
     #in case current frame is the same as the frame we are comparing to. 
-    #Code will fail as everything will be removed and nothing left to analyse.
-    #if frame == firstframe:
-    #    ret, frame = cap.read()
+    #Code will fail as everything will be removed and nothing left to analyse.    
+    current_frame = int(cap.get(cv2.CAP_PROP_POS_FRAMES)) #get the number of current frame
+    print(current_frame,  " ",  comparing_frame)
+
+    if current_frame == comparing_frame:
+        break
+        #print(current_frame,  " ",  comparing_frame)
+        #ret, frame = cap.read()
+        #print(int(cap.get(cv2.CAP_PROP_POS_FRAMES)))
+        #if not ret:
+        #    break
         
     # Convert the frame to grayscale
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -76,19 +85,12 @@ while True:
     #denoised_frame = cv2.medianBlur(semi_denoised_frame, 5)  # Adjust the kernel size (5x5) as needed
     #blur2 = cv2.GaussianBlur(denoised_frame, (5, 5), 0)
 
-    # Perform adaptive thresholding
+    # Perform different thresholdings
     thresh = cv2.adaptiveThreshold(blur, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV,11, 5)
     ret, thresh3 = cv2.threshold(blur, 0, 255, cv2.THRESH_BINARY_INV+cv2.THRESH_OTSU)
     ret, thresh4 = cv2.threshold(blur,threshvalue,255,cv2.THRESH_BINARY)
     currentframe = cv2.bitwise_not(thresh4)
-    
-    # Overlay the fish onto the black background
-    #fish_only = cv2.bitwise_and(frame, fish_mask)
-    #result = cv2.add(black_background_with_fish, fish_only)
-
-    # Display the resulting frame
-    #cv2.imshow('Fish on Black', fish_mask_inv)
-    
+        
     fish_only = cv2.bitwise_xor(thresh4, fthresh4)
 
     kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3))
@@ -120,12 +122,12 @@ while True:
     res_frame = cv2.bitwise_and(frame, frame, mask=mask_resized)
     res_gray = cv2.cvtColor(res_frame, cv2.COLOR_BGR2GRAY)    
     
-    cv2.imshow('Video2', res_frame)
+    cv2.imshow('ColorVideo', res_frame)
     line1 = np.concatenate((dilate_frame, erode_frame,currentframe), axis=1)
     line2 = np.concatenate((lastframe, fish_only, res_gray), axis=1)
     mosaic = np.concatenate((line1, line2), axis=0)
 
-    cv2.imshow('Video', mosaic)
+    cv2.imshow('GrayANDbwVideo', mosaic)
     if cv2.waitKey(25) & 0xFF == ord('q'):
         break
 
