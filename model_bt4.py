@@ -66,8 +66,6 @@ while True:
     #in case current frame is the same as the frame we are comparing to. 
     #Code will fail as everything will be removed and nothing left to analyse.    
     current_frame = int(cap.get(cv2.CAP_PROP_POS_FRAMES)) #get the number of current frame
-    print(current_frame,  " ",  comparing_frame)
-
     if current_frame == comparing_frame:
         break
         #print(current_frame,  " ",  comparing_frame)
