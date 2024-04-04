@@ -87,7 +87,7 @@ should provide at least the following flags:
 
 Example:
 ```sh
-python detect.py --det det --cfg cfg/yolov3-1-class.cfg --weights weights/merge_yolov3.weights --images fish_img/bbc_undestinct.png
+python detect.py --det det --cfg cfg/yolov3-1-class.cfg --weights weights/merge_yolov3.weights --images fish_img/frame_000098.png
 ```
 
 The example above assumes you have downloaded the *merge* dataset's weights and used an arbitrary fish image, in my case it's the fish from BBC on top of
