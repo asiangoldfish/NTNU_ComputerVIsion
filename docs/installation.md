@@ -59,20 +59,21 @@ Follow the guide below for installation.
      ```
      git clone https://github.com/pyenv-win/pyenv-win.git "%USERPROFILE%\.pyenv"
      ```
-   - Add `%USERPROFILE%\.pyenv\bin` to your system's PATH environment variable.
+   - Add `%USERPROFILE%\.pyenv\pyenv-win\bin` to your system's PATH environment variable.
 
 2. **Install Python 3.9 with pyenv**:
    - Open a new command prompt.
    - Run the following command to install Python 3.9:
      ```
-     pyenv install 3.9.18
+     pyenv update
+     pyenv install 3.9
      ```
 
 3. **Set Python 3.9 as the local version**:
    - Navigate to your project directory in the command prompt.
    - Run the following command to set Python 3.9 as the local version for your project:
      ```
-     pyenv local 3.9.18
+     pyenv local 3.9
      ```
 
 4. **Verify Python installation**:
@@ -81,11 +82,18 @@ Follow the guide below for installation.
      python --version
      ```
 
+     If the Python version is not 3.9.x, then it may be necessary to add the new
+     Python version to PATH. Thus, add `%USERPROFILE%\.pyenv\pyenv-win\shims`
+     to PATH. You should now be able to verify the Python version as 3.9.x:
+     ```
+     python39 --version
+     ```
+
 5. **Create and activate a virtual environment**:
    - Navigate to your project directory in the command prompt.
    - Run the following commands to create and activate a virtual environment named `.venv`:
-     ```
-     python -m venv .venv
+     ```ps1
+     python -m venv .venv # or python39
      .venv\Scripts\activate
      ```
 

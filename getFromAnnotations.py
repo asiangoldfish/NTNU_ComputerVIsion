@@ -130,6 +130,23 @@ def augment(img, output_path):
     # Horisontally & vertically flipped
     flipped_h_v_img = cv2.flip(flipped_h_img, 0)
     cv2.imwrite(file_name + "flipped_h_v" + file_extension, flipped_h_v_img)
+
+    # Add a blue tint typical of underwater images
+    # blue_tint = np.array([255, 128, 0])
+    blue_tint_img = np.copy(img)
+    # blue_tint_img = cv2.addWeighted(img, 1, np.zeros_like(img), 0, 0, blue_tint)
+    blue_tint_img[:, :, 0] = cv2.add(blue_tint_img[:, :, 0], 100)
+    blue_tint_img[:, :, 1] = cv2.add(blue_tint_img[:, :, 1], 25)
+    blue_tint_img[:, :, 2] = cv2.add(blue_tint_img[:, :, 2], 25)
+    cv2.imwrite(file_name + "_blue_tint" + file_extension, blue_tint_img)
+
+    # Add a algae-green tint typical of underwater images in the sea
+    # green_tint = np.array([0, 255, 128])
+    green_tint_img = np.copy(img)
+    # green_tint_img = cv2.addWeighted(img, 1, np.zeros_like(img), 0, 0, green_tint)
+    green_tint_img[:, :, 1] = cv2.add(green_tint_img[:, :, 1], 50)
+    green_tint_img[:, :, 0] = cv2.add(green_tint_img[:, :, 0], 25)
+    cv2.imwrite(file_name + "_green_tint" + file_extension, green_tint_img)
     
 
 def process_video_annotations(annotations_dir, output_dir):
