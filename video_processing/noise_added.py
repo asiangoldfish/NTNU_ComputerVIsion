@@ -1,5 +1,5 @@
 import cv2
-
+import numpy as np
 
 # Open the video file
 cap = cv2.VideoCapture('fish.mp4')
@@ -27,15 +27,17 @@ while True:
     # Resizing the frame
     resized_frame = cv2.resize(frame, (224, 224))
 
-    # Denoising the frame 
-    semi_denoised_frame = cv2.fastNlMeansDenoising(resized_frame, None, 10, 7, 21)
-    denoised_frame = cv2.medianBlur(semi_denoised_frame, 5)  # Adjust the kernel size (5x5) as needed
+    # Adding Gaussian noise
+    noise = np.random.normal(0, 1, resized_frame.size)
+    noise = noise.reshape(resized_frame.shape).astype('uint8')
+    
+    noisy_frame = cv2.add(resized_frame, noise)
 
     # Write denoised frame to file
-    cv2.imwrite(f'noise_reduced/denoised_frame_{frame_count}.jpg', denoised_frame)
+    cv2.imwrite(f'noise_increased/denoised_frame_{frame_count}.jpg', noisy_frame)
 
     # Display original and denoised frames
-    #mosaic = np.concatenate((resized_frame, denoised_frame), axis=1)
+    #mosaic = np.concatenate((resized_frame, noisy_frame), axis=1)
     #cv2.imshow('Video', mosaic)
     
     key = cv2.waitKey(25)  # Set playback speed (ms between frames)
