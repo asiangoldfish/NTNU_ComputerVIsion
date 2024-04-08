@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+import os
 
 #taken from stackoverflow
 def adjust_gamma(image, gamma=1.0):
@@ -22,6 +23,21 @@ if not cap.isOpened():
 
 frame_count = 0  # To control how many images of the array to show
 
+if not os.path.exists("noise_increased"):
+    os.makedirs("noise_increased")
+    
+if not os.path.exists("noise_reduced"):
+    os.makedirs("noise_reduced")
+    
+if not os.path.exists("illumination_increased"):
+    os.makedirs("illumination_increased")
+    
+if not os.path.exists("illumination_decreased"):
+    os.makedirs("illumination_decreased")
+    
+if not os.path.exists("hsv"):
+    os.makedirs("hsv")
+
 # Loop through each frame of the video
 while True:
     ret, frame = cap.read()
@@ -35,29 +51,28 @@ while True:
         continue
     
     # Resizing the frame
-    resized_frame = cv2.resize(frame, (224, 224))
 
     #HSV Not used to anything useful yet.
-    hsv_frame = cv2.cvtColor(resized_frame, cv2.COLOR_BGR2HSV)
+    hsv_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
     # Adding Gaussian noise
-    noise = np.random.normal(0, 1, resized_frame.size)
-    noise = noise.reshape(resized_frame.shape).astype('uint8')    
-    noisy_frame = cv2.add(resized_frame, noise)
+    noise = np.random.normal(0, 1, frame.size)
+    noise = noise.reshape(frame.shape).astype('uint8')    
+    noisy_frame = cv2.add(frame, noise)
 
     # Denoising the frame 
-    semi_denoised_frame = cv2.fastNlMeansDenoising(resized_frame, None, 10, 7, 21)
+    semi_denoised_frame = cv2.fastNlMeansDenoising(frame, None, 10, 7, 21)
     denoised_frame = cv2.medianBlur(semi_denoised_frame, 5)  # Adjust the kernel size (5x5) as needed
 
     #change illumination
-    darker_frame = adjust_gamma(resized_frame, gamma=0.4) #adjust gamma down for darker, and up for lighter. 1 = no change.
-    lighter_frame = adjust_gamma(resized_frame, gamma=1.6)
+    darker_frame = adjust_gamma(frame, gamma=0.4) #adjust gamma down for darker, and up for lighter. 1 = no change.
+    lighter_frame = adjust_gamma(frame, gamma=1.6)
 
     #display results
-    line1 = np.concatenate((resized_frame, denoised_frame, noisy_frame), axis=1)
-    line2 = np.concatenate((darker_frame, lighter_frame, hsv_frame), axis=1)
-    mosaic = np.concatenate((line1, line2), axis=0)    
-    cv2.imshow('ColorVideo', mosaic)
+    #line1 = np.concatenate((frame, denoised_frame, noisy_frame), axis=1)
+    #line2 = np.concatenate((darker_frame, lighter_frame, hsv_frame), axis=1)
+    #mosaic = np.concatenate((line1, line2), axis=0)    
+    #cv2.imshow('ColorVideo', mosaic)
     
     # Write frames to files
     cv2.imwrite(f'noise_increased/noisy_frame_{frame_count}.jpg', noisy_frame)
