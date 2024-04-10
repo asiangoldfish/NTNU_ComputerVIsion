@@ -240,7 +240,7 @@ torch.cuda.empty_cache()
 # Get the image name
 im_name = imlist[0].split("/")[-1]  # Assuming the image is in a subdirectory
 
-output_name = args.det + "/det_" + im_name
+output_name = im_name + ".det"
 
 plt.imshow(cv2.imread(output_name))
 plt.show()

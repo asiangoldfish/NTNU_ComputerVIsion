@@ -164,7 +164,7 @@ for file in mp4files:
         # Elapsed time
         seconds_per_frame = time.time() - start_time_frame # Total elapsed time in seconds
         total_seconds_elapsed += seconds_per_frame
-        elapsed_minutes = seconds_per_frame // 60
+        elapsed_minutes = total_seconds_elapsed // 60
         elapsed_hours = elapsed_minutes // 60
         elapsed_seconds = total_seconds_elapsed - (elapsed_hours * 3600 + elapsed_minutes * 60)
 
