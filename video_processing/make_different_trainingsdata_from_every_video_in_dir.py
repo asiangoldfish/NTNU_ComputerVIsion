@@ -2,6 +2,8 @@ import cv2
 import numpy as np
 import os
 import glob
+import time
+
 
 #Variables to activate/deactivate
 
@@ -34,6 +36,7 @@ for file in glob.glob("*.mp4"):
 total_videos = len(mp4files)
 video_count = 0
 for file in mp4files:
+    start_time_video = time.time()
     video_count += 1
     filesplit = file.split(".")
     filename = filesplit[0]     #filename without .mp4 
@@ -91,6 +94,8 @@ for file in mp4files:
         
     # Loop through each frame of the video
     while True:
+        start_time_frame = time.time()
+
         ret, frame = cap.read()
         if not ret:
             break
@@ -146,9 +151,7 @@ for file in mp4files:
         # Stacking the original image with the enhanced image
         result = np.hstack((resized_frame, contrasted_frame))
         #cv2.imshow('Result', result)
-    
-        print("file: " + file + " - video: " + str(video_count) + " / " + str(total_videos) + " - frame: " + str(frame_count) + " / " + str(total_frames))
-        
+            
         #display results
         if showVideo :
             line1 = np.concatenate((resized_frame, contrasted_frame, denoised_frame), axis=1)
@@ -165,8 +168,13 @@ for file in mp4files:
             cv2.imwrite(f'{filename}/illumination_decreased/frame{frame_num}.jpg', darker_frame)
             cv2.imwrite(f'{filename}/illumination_increased/frame{frame_num}.jpg', lighter_frame)
             cv2.imwrite(f'{filename}/contrasted/frame{frame_num}.jpg', contrasted_frame)
+        
+        total_time_frame = time.time() - start_time_frame
+        print("file: " + file + " - video: " + str(video_count) + " / " + str(total_videos) + " - frame: " + str(frame_count) + " / " + str(total_frames) + " - {total_time_frame}secs")
+
           
     # Release the video capture object and close all windows
-    print(file + " done!")      
+    total_time_video = time.time() - start_time_video
+    print(file + " done in {total_time_video} secs")      
     cap.release()
     cv2.destroyAllWindows()
