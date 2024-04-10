@@ -45,9 +45,17 @@ if total_videos == 0:
 for file in mp4files:
     start_time_video = time.time()
     video_count += 1
-    filesplit = file.split(".")
+
+    if os.name == 'nt':
+        filesplit = file.split("\\")
+    else:
+        filesplit = file.split("/")
+
+
+    filesplit = filesplit[-1].split(".")
     filename = filesplit[0]     #filename without .mp4 
-    print(filename + " - video: " + str(video_count) + " / " + str(total_videos))
+
+    print(filename + ".mp4 - video: " + str(video_count) + "/" + str(total_videos))
 
     # Open the video file
     cap = cv2.VideoCapture(file)
@@ -61,20 +69,20 @@ for file in mp4files:
     total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     frame_count = 0  # To control how many images of the array to show
     
-    if not os.path.exists(f"dataset/{filename}/noise_increased"):
-        os.makedirs(f"dataset/{filename}/noise_increased")
+    if not os.path.exists(f"output/{filename}/noise_increased"):
+        os.makedirs(f"output/{filename}/noise_increased")
         
-    if not os.path.exists(f"dataset/{filename}/noise_reduced"):
-        os.makedirs(f"dataset/{filename}/noise_reduced")
+    if not os.path.exists(f"output/{filename}/noise_reduced"):
+        os.makedirs(f"output/{filename}/noise_reduced")
         
-    if not os.path.exists(f"dataset/{filename}/illumination_increased"):
-        os.makedirs(f"dataset/{filename}/illumination_increased")
+    if not os.path.exists(f"output/{filename}/illumination_increased"):
+        os.makedirs(f"output/{filename}/illumination_increased")
         
-    if not os.path.exists(f"dataset/{filename}/illumination_decreased"):
-        os.makedirs(f"dataset/{filename}/illumination_decreased")
+    if not os.path.exists(f"output/{filename}/illumination_decreased"):
+        os.makedirs(f"output/{filename}/illumination_decreased")
         
-    if not os.path.exists(f"dataset/{filename}/contrasted"):
-        os.makedirs(f"dataset/{filename}/contrasted")
+    if not os.path.exists(f"output/{filename}/contrasted"):
+        os.makedirs(f"output/{filename}/contrasted")
 
     total_seconds_elapsed = 0
         
@@ -147,11 +155,11 @@ for file in mp4files:
     
         # Write frames to files
         if createFiles :    
-            cv2.imwrite(f'{filename}/noise_increased/frame{frame_num}.jpg', noisy_frame)
-            cv2.imwrite(f'{filename}/noise_reduced/frame{frame_num}.jpg', denoised_frame)
-            cv2.imwrite(f'{filename}/illumination_decreased/frame{frame_num}.jpg', darker_frame)
-            cv2.imwrite(f'{filename}/illumination_increased/frame{frame_num}.jpg', lighter_frame)
-            cv2.imwrite(f'{filename}/contrasted/frame{frame_num}.jpg', contrasted_frame)
+            cv2.imwrite(f'output/{filename}/noise_increased/frame{frame_num}.jpg', noisy_frame)
+            cv2.imwrite(f'output/{filename}/noise_reduced/frame{frame_num}.jpg', denoised_frame)
+            cv2.imwrite(f'output/{filename}/illumination_decreased/frame{frame_num}.jpg', darker_frame)
+            cv2.imwrite(f'output/{filename}/illumination_increased/frame{frame_num}.jpg', lighter_frame)
+            cv2.imwrite(f'output/{filename}/contrasted/frame{frame_num}.jpg', contrasted_frame)
         
         # Elapsed time
         seconds_per_frame = time.time() - start_time_frame # Total elapsed time in seconds
