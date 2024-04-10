@@ -3,6 +3,7 @@ import numpy as np
 import os
 import glob
 import time
+import sys
 
 
 #Variables to activate/deactivate
@@ -29,12 +30,18 @@ def adjust_gamma(image, gamma=1.0):
 
 
 mp4files = []
-for file in glob.glob("*.mp4"):
+for file in glob.glob("dataset/*.mp4"):
     mp4files.append(file)
     
 #print(mp4files)    
 total_videos = len(mp4files)
 video_count = 0
+
+# No vides were found
+if total_videos == 0:
+    print("No videos were found. Please create a directory 'dataset/' and load all your MP4 videos here.")
+    sys.exit(1)
+
 for file in mp4files:
     start_time_video = time.time()
     video_count += 1
@@ -42,55 +49,34 @@ for file in mp4files:
     filename = filesplit[0]     #filename without .mp4 
     print(filename + " - video: " + str(video_count) + " / " + str(total_videos))
 
-    key = cv2.waitKey(1)  # Set playback speed (ms between frames)
-    if key == ord('q'):    # Add option to exit program
-        break
-
-
-#taken from stackoverflow
-
     # Open the video file
-    
-    #code for looping trough every video, but this lines replaces this for now.
-    
     cap = cv2.VideoCapture(file)
-    
-    #if showVideo :
-    cv2.namedWindow('ColorVideo', cv2.WINDOW_NORMAL)
-    cv2.resizeWindow('ColorVideo', 224*4, 224*2)  # Adjust the width and height as needed
-    #cv2.namedWindow('Colornormal', cv2.WINDOW_NORMAL)
-    #cv2.resizeWindow('Colornormal', 224, 224)  # Adjust the width and height as needed
     
     # Check if the video file was opened successfully
     if not cap.isOpened():
-        print("Error: Could not open video file 'fish.mp4'")
-        exit()    
+        print(f"Error: Could not open video file '{filename}.mp4'")
+        continue
     
     
     total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     frame_count = 0  # To control how many images of the array to show
     
-    if not os.path.exists(f"{filename}/noise_increased"):
-        os.makedirs(f"{filename}/noise_increased")
+    if not os.path.exists(f"dataset/{filename}/noise_increased"):
+        os.makedirs(f"dataset/{filename}/noise_increased")
         
-    if not os.path.exists(f"{filename}/noise_reduced"):
-        os.makedirs(f"{filename}/noise_reduced")
+    if not os.path.exists(f"dataset/{filename}/noise_reduced"):
+        os.makedirs(f"dataset/{filename}/noise_reduced")
         
-    if not os.path.exists(f"{filename}/illumination_increased"):
-        os.makedirs(f"{filename}/illumination_increased")
+    if not os.path.exists(f"dataset/{filename}/illumination_increased"):
+        os.makedirs(f"dataset/{filename}/illumination_increased")
         
-    if not os.path.exists(f"{filename}/illumination_decreased"):
-        os.makedirs(f"{filename}/illumination_decreased")
+    if not os.path.exists(f"dataset/{filename}/illumination_decreased"):
+        os.makedirs(f"dataset/{filename}/illumination_decreased")
         
-    if not os.path.exists(f"{filename}/contrasted"):
-        os.makedirs(f"{filename}/contrasted")
-        
-    #checking if folder exists
-    #if not os.exists("noise_increased/"):
-    #    os.create("noice_increased/")
-    
-    #if not os.path.exists("mappenavn"):
-    #    os.makedirs("mappenavn")
+    if not os.path.exists(f"dataset/{filename}/contrasted"):
+        os.makedirs(f"dataset/{filename}/contrasted")
+
+    total_seconds_elapsed = 0
         
     # Loop through each frame of the video
     while True:
@@ -131,8 +117,6 @@ for file in mp4files:
         darker_frame = adjust_gamma(resized_frame, gamma=0.4) #adjust gamma down for darker, and up for lighter. 1 = no change.
         lighter_frame = adjust_gamma(resized_frame, gamma=1.6)
         
-        #img = cv2.imread('flower.jpg', 1)
-    
         # converting to LAB color space
         lab = cv2.cvtColor(resized_frame, cv2.COLOR_BGR2LAB)
         l_channel, a, b = cv2.split(lab)
@@ -169,8 +153,31 @@ for file in mp4files:
             cv2.imwrite(f'{filename}/illumination_increased/frame{frame_num}.jpg', lighter_frame)
             cv2.imwrite(f'{filename}/contrasted/frame{frame_num}.jpg', contrasted_frame)
         
-        total_time_frame = time.time() - start_time_frame
-        print("file: " + file + " - video: " + str(video_count) + " / " + str(total_videos) + " - frame: " + str(frame_count) + " / " + str(total_frames) + " - {total_time_frame}secs")
+        # Elapsed time
+        seconds_per_frame = time.time() - start_time_frame # Total elapsed time in seconds
+        total_seconds_elapsed += seconds_per_frame
+        elapsed_minutes = seconds_per_frame // 60
+        elapsed_hours = elapsed_minutes // 60
+        elapsed_seconds = total_seconds_elapsed - (elapsed_hours * 3600 + elapsed_minutes * 60)
+
+        # print("file: " + file + " - video: " + str(video_count) + " / " + str(total_videos) + " - frame: " + str(frame_count) + " / " + str(total_frames) + " - {total_time_frame}secs")
+
+        
+        # Print loading bar
+        print(f"\tFrame {frame_count + 1} of {total_frames} ", end='|')
+
+        # Number of signs to print for loading bar
+        loading_bar = ((frame_count + 1) / total_frames) * 100
+
+        for j in range(int(loading_bar)):
+            print("=", end='')
+
+        # Print empty signs for remaining frames to render
+        for j in range(100 - int(loading_bar)):
+            print(" ", end='')
+
+        print(f"| {100 * (frame_count + 1) / total_frames:.1f}% | ", end='')
+        print(f"Elapsed: {int(elapsed_hours)}hr {int(elapsed_minutes)}m {int(elapsed_seconds)}s | Frame time: {'{:.4f}'.format(seconds_per_frame)}s", end='\r')
 
           
     # Release the video capture object and close all windows
