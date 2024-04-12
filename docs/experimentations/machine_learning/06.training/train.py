@@ -1,5 +1,8 @@
 from ultralytics import YOLO
 
+model = YOLO('yolo.yaml')  # build a new model from YAML
+model = YOLO('yolov8n.pt')  # load a pretrained model (recommended for training)
+
 # Load a COCO-pretrained YOLOv8n model
 model = YOLO('yolo.yaml').load('yolov8n.pt')
 
