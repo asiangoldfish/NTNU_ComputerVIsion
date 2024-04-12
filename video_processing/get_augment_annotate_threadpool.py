@@ -126,13 +126,32 @@ def process_video_annotations(input_dir, output_dir):
 
     with alive_bar(len(os.listdir(input_dir))) as bar:
         for video in os.listdir(input_dir):
+
+            #debug
+            if args.verbose:
+                print('Processing video {}'.format(video))
+
+            # skip non-video directories
             if not os.path.isdir(os.path.join(input_dir, video)):
+                #debug
+                if args.verbose:
+                    print('Processing video: Skipping non-video directory {}'.format(video))
+
                 continue
             annotations_path = os.path.join(input_dir, video, 'annotations.xml')
             frames_dir = os.path.join(input_dir, video, 'images')
+
+            #debug
+            if args.verbose:
+                print('Processing: annotations path: ', annotations_path)
+                print('Processing: frames path: ', frames_dir)
+
             augment_video(annotations_path, frames_dir, output_dir)
             bar()
         # pool.submit(augment, annotations_path, frames_dir, output_dir)
+
+    # wait for all threads to finish
+    pool.shutdown(wait=True)
 
 def augment_video(annotations_path, frames_dir, output_dir):
     """
@@ -144,8 +163,15 @@ def augment_video(annotations_path, frames_dir, output_dir):
         output_dir (str): The directory to save the cropped frames.
     """
 
+    if args.verbose:
+        print("Augmenting video {}".format(annotations_path))
+
     annotations = parse_annotations(annotations_path, args.skip_frames)
     if len(annotations) == 0:
+        #debug
+        if args.verbose:
+            print("No annotations found in {}".format(annotations_path))
+
         return
 
     # start the progress bar
@@ -223,6 +249,8 @@ def augment_and_annotate(frames_dir, output_dir, idx, source, frame_nr, x_centre
     frame = cv2.imread(frame_path)
     if args.visual:
         cv2.imshow('Frame', frame)
+    if args.verbose:
+        print("Read frame {} from {}".format(frame_nr, frame_path))
 
     if args.reduced_res:
         frame = cv2.resize(frame, (224, 224))
@@ -251,6 +279,15 @@ def augment_and_annotate(frames_dir, output_dir, idx, source, frame_nr, x_centre
     if args.visual:
         cv2.imshow('noflip', frame)
         cv2.waitKey(0)
+
+    #debug
+    # checking contents of `augments`
+    # if "flip_h" in augments:
+    #     print("flip_h in augments")
+    # if 'rotation' in augments:
+    #     print("rotation in augments")
+    # print('first element of augments: ', augments[0])
+
     if 'flip_h' in augments:
         # augments.remove('flip_h')
         transform_flip_h = A.Compose([
