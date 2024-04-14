@@ -6,42 +6,17 @@ IMAGE_HEIGHT = 1080
 
 subdirs = list()
 
-import argparse
-
-parser = argparse.ArgumentParser()
-parser.add_argument(
-    "--target",
-    type=str,
-    default="",
-    help="The location where we want to store the new annotations",
-    required=True
-)
-parser.add_argument(
-    "--source",
-    type=str,
-    default="",
-    help="The location where we want to store the new annotations",
-    required=True
-)
-
-args = parser.parse_args()
-
 # The location where we want to store the new annotations
-TARGET = args.target
-ANNOTATED_VIDEOS = args.source
+TARGET = 'annotations'
 
-for a in os.listdir(ANNOTATED_VIDEOS):
-    subdirs.append(a)
-
-if not os.path.exists(TARGET):
-    os.mkdir(TARGET)
-
-for i, subdir in enumerate(subdirs):
+for i, subdir in enumerate(os.listdir('annotations')):
     # Logging
     print(f"Video {i + 1}/{len(subdirs)}")
 
+    subdir = os.path.join(TARGET, subdir)
+
     # Parse the XML file
-    tree = ET.parse(os.path.join(ANNOTATED_VIDEOS, subdir, "annotations.xml"))
+    tree = ET.parse(subdir)
     root = tree.getroot()
 
     source, _ = os.path.splitext(root.find('meta').find('source').text)

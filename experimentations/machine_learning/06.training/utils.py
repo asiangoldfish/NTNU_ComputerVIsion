@@ -94,8 +94,18 @@ def split_dataset() -> bool:
 
         name, _ = os.path.splitext(file)
 
-        # Move image
-        shutil.move(f'output/{name}.jpg', f'output/{target}/{name}.jpg', copy_function = shutil.copy2)
+        name = name.split("\\")[-1]
+
+        try:
+            # Move image
+            shutil.move(f'{os.path.join('output', name)}.jpg', f'{os.path.join('output', target, name)}.jpg', copy_function = shutil.copy2)
+
+            # Move annotation
+            shutil.move(f'{os.path.join('output', name)}.txt', f'{os.path.join('output', target, name)}.txt', copy_function = shutil.copy2)
+        except Exception as e:
+            print(e)
+            continue
+
 
         print(f"Progression: {100 * (i + 1) / len(images):.1f}% | ", end='')
 

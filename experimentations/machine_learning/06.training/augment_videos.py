@@ -53,12 +53,12 @@ if total_videos == 0:
 # corresponding video. This ensures saves performance, so we don't process
 # frames without fishes.
 for ann_file in annotations:
-    found_boxes = utils.parse_annotations(os.path.join(ann_file), 1)
+    found_boxes = utils.parse_annotations(ann_file, 1)
     for box in found_boxes:
         frame_num = box['frame_num']
         source = box['source']
 
-        if source not in mp4files:
+        if os.path.join('dataset', source) not in mp4files:
             break
 
         try:
@@ -69,7 +69,10 @@ for ann_file in annotations:
 
 # Process videos
 for video_count, file in enumerate(mp4files):
-    file_path = os.path.join('dataset', file)
+    if os.name == 'nt':
+        file_path = file
+    else:
+        file_path = os.path.join('dataset', file)
 
     try:
         if len(video_annotation[f"{file}.mp4"]) == 0:
@@ -83,7 +86,7 @@ for video_count, file in enumerate(mp4files):
 
     # Get the filename without extension
     name, extension = os.path.splitext(file)
-    filename = name
+    filename = name.split('\\')[-1]
 
     print(f'{file_path} - video: {str(video_count + 1)}/{str(total_videos)}')
 
@@ -164,6 +167,7 @@ for video_count, file in enumerate(mp4files):
         result = np.hstack((resized_frame, contrasted_frame))
     
         # Write frames to files
+        cv2.imwrite(f'output/{filename}_frame{frame_num}.jpg', resized_frame)
         cv2.imwrite(f'output/{filename}_noiseIncreased_frame{frame_num}.jpg', noisy_frame)
         cv2.imwrite(f'output/{filename}_noiseReduced_frame{frame_num}.jpg', denoised_frame)
         cv2.imwrite(f'output/{filename}_illuminationReduced_frame{frame_num}.jpg', darker_frame)
@@ -199,7 +203,7 @@ for video_count, file in enumerate(mp4files):
           
     # Release the video capture object and close all windows
     total_time_video = time.time() - start_time_video
-    print(file + " done in {total_time_video} secs")      
+    print(f"\n{file} done in {total_time_video} secs")      
     cap.release()
     cv2.destroyAllWindows()
 

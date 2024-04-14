@@ -1,10 +1,11 @@
 # Installation
 
-To ensure the installation for your operating system goes smoothly, follow the
-appropriate instructions.
+To ensure a successful installation, follow please follow the appropriate instructions for your platform.
 
 - [Linux](#linux)
 - [Windows](#windows)
+
+We do not support MacOS.
 
 # Linux
 ## Python
@@ -34,13 +35,14 @@ package manager of choice doesn't contain Python3.9, then we suggest using
    ```
    python -m venv .venv
    source .venv/bin/activate
-   pip install -r requirements.txt
    ```
 
-   *Optionally*, you can install the dependencies manually.
+   Install the dependencies.
    ```
-   pip install numpy pandas numpydoc keras torch tensorflow pillow opencv-python scikit-learn
+   pip install numpy pandas numpydoc keras torch tensorflow pillow opencv-python scikit-learn ultralytics
    ```
+
+   We do not provide *requirements.txt*, because dependencies differ across platforms and system configurations (like graphics adaptors).
 
 # Windows
 
@@ -99,13 +101,10 @@ Follow the guide below for installation.
 
 6. **Install project dependencies**:
    - Ensure you're still in your project directory and your virtual environment is activated.
-   - Run the following command to install the dependencies listed in your `requirements.txt` file:
-     ```
-     pip install -r requirements.txt
-     ```
+   - Run the following command to install the dependencies:
+   
+      ```
+      pip install numpy pandas numpydoc keras torch tensorflow pillow opencv-python scikit-learn ultralytics
+      ```
 
-   Optionally, you can install the dependencies manually using the following command:
-
-   ```
-   pip install numpy pandas numpydoc keras torch tensorflow pillow opencv-python scikit-learn
-   ```
+      We do not provide *requirements.txt*, because dependencies differ across platforms and system configurations (like graphics adaptors).

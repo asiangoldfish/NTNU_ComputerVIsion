@@ -7,4 +7,3 @@ backup/
 
 # Weights
 *.weights
-*.pt
