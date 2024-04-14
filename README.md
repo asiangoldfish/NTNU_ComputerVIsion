@@ -17,7 +17,7 @@ Due to the nature of research and experimentations, the project is an organised 
 
 - [Computer Vision Methods](./experimentations/computer_vision_methods/)
 - [Data Preparations](./experimentations/data_preparations/)
-- [Machine Learning](./experimentations/machine_learning/)
+- [Deep Learning](./experimentations/deep_learning/)
 
 *Computer Vision [CV] Methods* consist of scripts with classical CV methods for image classifications. *Data Preparations* and *Machine Learning* (a somewhat misinterpreted name) are part of our deep learning experimentations where we prepare a dataset to feed a deep learning model.
 
