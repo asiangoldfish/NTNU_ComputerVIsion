@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import cv2      # Using functions from OpenCV
 
 cap = cv2.VideoCapture('fish.mp4')

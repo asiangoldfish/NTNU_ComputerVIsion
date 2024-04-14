@@ -1,3 +1,8 @@
+#!/usr/bin/env python3
+
+"""augment_videos.py manipulates existing 
+"""
+
 import cv2
 import numpy as np
 import os

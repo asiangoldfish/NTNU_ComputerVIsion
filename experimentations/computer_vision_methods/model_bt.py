@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import cv2      # Using functions from OpenCV
 import numpy as np
 import sys
