@@ -83,6 +83,8 @@ def split_dataset() -> bool:
         print("No images or files to split")
         return False
 
+    print("Splitting files into training and testing...")
+
     # Split the frames into training and testing: 80/20
     for i, file in enumerate(images):
         if i < train_count:
@@ -95,8 +97,19 @@ def split_dataset() -> bool:
         # Move image
         shutil.move(f'output/{name}.jpg', f'output/{target}/{name}.jpg', copy_function = shutil.copy2)
 
-        # Move annotation
-        shutil.move(f'output/{name}.txt', f'output/{target}/{name}.txt', copy_function = shutil.copy2)
+        print(f"Progression: {100 * (i + 1) / len(images):.1f}% | ", end='')
+
+        # Number of signs to print for loading bar
+        loading_bar = ((i + 1) / len(images)) * 100
+
+        for j in range(int(loading_bar)):
+            print("=", end='')
+
+        # Print empty signs for remaining frames to render
+        for j in range(100 - int(loading_bar)):
+            print(" ", end='')
+        
+        print("|", end='\r')
         
 
     # Split the annotations into training and testing: 80/20
@@ -108,4 +121,9 @@ def split_dataset() -> bool:
 
     #     shutil.move(f'output/{file}', f'output/{target}/{file}', copy_function = shutil.copy2)
 
+    print()
+
     return True
+
+if __name__ == '__main__':
+    split_dataset()
